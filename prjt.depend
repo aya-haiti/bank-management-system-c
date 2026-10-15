@@ -1,0 +1,300 @@
+# depslib dependency file v1.0
+1733864964 source:c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<conio.h>
+	"date.h"
+	"admin.h"
+	"couleur.h"
+	"afficherMenuPrincipal.h"
+
+1733865154 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\date.h
+	<windows.h>
+
+1733864962 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\admin.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"date.h"
+	"couleur.h"
+	"historiqueTransaction.h"
+	"structure.h"
+	"employe.h"
+
+1733865107 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\couleur.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+
+1733875784 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\historiquetransaction.h
+	<stdlib.h>
+	<stdio.h>
+	"structure.h"
+
+1733868623 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\structure.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1733869640 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\employe.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"admin.h"
+
+1733865052 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\affichermenuprincipal.h
+	<stdio.h>
+	<stdlib.h>
+	"couleur.h"
+	"admin.h"
+	"employe.h"
+	"utilisateur.h"
+
+1733877641 c:\users\hp elitebook 840 g8\onedrive\desktop\mycode\prjt\utilisateur.h
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"employe.h"
+	"couleur.h"
+
+1734408411 source:c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<conio.h>
+	"date.h"
+	"admin.h"
+	"couleur.h"
+	"afficherMenuPrincipal.h"
+
+1734136197 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\date.h
+	<windows.h>
+
+1734412186 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\admin.h
+	<stdio.h>
+	<string.h>
+	<conio.h>
+	<stdlib.h>
+	"date.h"
+	"couleur.h"
+	"historiqueTransaction.h"
+	"structure.h"
+	"employe.h"
+	"revenir.h"
+
+1734136197 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\couleur.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+
+1734136197 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\historiquetransaction.h
+	<stdlib.h>
+	<stdio.h>
+	"structure.h"
+
+1734136197 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\structure.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1734408945 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\employe.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"admin.h"
+	"revenir.h"
+
+1734136197 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\affichermenuprincipal.h
+	<stdio.h>
+	<stdlib.h>
+	"couleur.h"
+	"admin.h"
+	"employe.h"
+	"utilisateur.h"
+
+1734409874 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\utilisateur.h
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"employe.h"
+	"couleur.h"
+	"revenir.h"
+
+1734402516 c:\users\hp elitebook 840 g8\onedrive\desktop\prjt\revenir.h
+	<stdlib.h>
+
+1734408410 source:c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<conio.h>
+	"date.h"
+	"admin.h"
+	"couleur.h"
+	"afficherMenuPrincipal.h"
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\date.h
+	<windows.h>
+
+1734415685 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\admin.h
+	<stdio.h>
+	<string.h>
+	<conio.h>
+	<stdlib.h>
+	"date.h"
+	"couleur.h"
+	"historiqueTransaction.h"
+	"structure.h"
+	"employe.h"
+	"revenir.h"
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\couleur.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\historiquetransaction.h
+	<stdlib.h>
+	<stdio.h>
+	"structure.h"
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\structure.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1734415622 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\employe.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"admin.h"
+	"revenir.h"
+	"saisirmotpasseavecetoiles.h"
+
+1734402516 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\revenir.h
+	<stdlib.h>
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\affichermenuprincipal.h
+	<stdio.h>
+	<stdlib.h>
+	"couleur.h"
+	"admin.h"
+	"employe.h"
+	"utilisateur.h"
+
+1734415481 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\utilisateur.h
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"employe.h"
+	"couleur.h"
+	"revenir.h"
+	"saisirmotpasseavecetoiles.h"
+
+1734414437 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal\prjt\saisirmotpasseavecetoiles.h
+	<stdio.h>
+	<string.h>
+	<windows.h>
+	<conio.h>
+
+1734408410 source:c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	<conio.h>
+	"date.h"
+	"admin.h"
+	"couleur.h"
+	"afficherMenuPrincipal.h"
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\date.h
+	<windows.h>
+
+1734681723 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\admin.h
+	<stdio.h>
+	<string.h>
+	<conio.h>
+	<stdlib.h>
+	"date.h"
+	"couleur.h"
+	"historiqueTransaction.h"
+	"structure.h"
+	"employe.h"
+	"revenir.h"
+
+1734644874 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\couleur.h
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+
+1734656666 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\historiquetransaction.h
+	<stdlib.h>
+	<stdio.h>
+	"structure.h"
+
+1734136196 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\structure.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+
+1734660362 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\employe.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"admin.h"
+	"revenir.h"
+	"saisirmotpasseavecetoiles.h"
+
+1734402516 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\revenir.h
+	<stdlib.h>
+
+1734414436 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\saisirmotpasseavecetoiles.h
+	<stdio.h>
+	<string.h>
+	<windows.h>
+	<conio.h>
+
+1734684349 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\affichermenuprincipal.h
+	<stdio.h>
+	<stdlib.h>
+	"couleur.h"
+	"admin.h"
+	"employe.h"
+	"utilisateur.h"
+
+1734656126 c:\users\hp elitebook 840 g8\onedrive\desktop\projrtprincipal (2)\projrtprincipal\prjt\utilisateur.h
+	<stdlib.h>
+	"structure.h"
+	"date.h"
+	"historiqueTransaction.h"
+	"employe.h"
+	"couleur.h"
+	"revenir.h"
+	"saisirmotpasseavecetoiles.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
