@@ -1,0 +1,8 @@
+*.exe
+*.o
+*.dat
+bin/
+obj/
+output/
+admin_credentials.txt
+tempCodeRunnerFile.c

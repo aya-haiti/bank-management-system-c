@@ -120,3 +120,16 @@ The system displays:
 
 ```text
 Date | Amount | New Balance | Type | Reason
+
+
+## Download (Windows)
+
+Pre-built executables are attached to each [GitHub Release](https://github.com/aya-haiti/bank-management-system-c/releases/latest)
+(built automatically by `.github/workflows/release.yml` when a `v*` tag is pushed).
+
+1. Download `BankManagement-windows.zip` and extract it.
+2. Copy `admin_credentials.example.txt` to `admin_credentials.txt` and set your own admin
+   username (line 1) and password (line 2).
+3. Run `BankManagement.exe` from that folder (data files `*.dat` are created next to it).
+
+Build from source: `gcc -O2 -o BankManagement.exe main.c` (MinGW, Windows).

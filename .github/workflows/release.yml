@@ -1,0 +1,45 @@
+name: Build & Release
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest   # the program uses <windows.h> and <conio.h>
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile with MinGW gcc
+        shell: bash
+        run: |
+          gcc --version
+          gcc -O2 -o BankManagement.exe main.c
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item BankManagement.exe, README.md, admin_credentials.example.txt dist/
+          Compress-Archive -Path dist/* -DestinationPath BankManagement-windows.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BankManagement-windows
+          path: BankManagement-windows.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: BankManagement-windows
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: BankManagement-windows.zip
+          generate_release_notes: true
