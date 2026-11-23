@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARH Bank · Simulator</title>
+<meta name="description" content="Version web du projet C « ARH Bank » : simulateur bancaire avec comptes de démonstration (client, employé, administrateur). Aucune opération réelle.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>">
+<style>
+:root{--bg:#f5f6f8;--panel:#fff;--line:#e3e6eb;--text:#111827;--muted:#6b7280;--brand:#0f4c81;--ok:#047857;--bad:#b91c1c;--r:12px}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1117;--panel:#151b24;--line:#263041;--text:#e6e9ef;--muted:#9aa4b2;--brand:#6cb4f5;--ok:#34d399;--bad:#f87171}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.wrap{width:min(980px,100% - 32px);margin-inline:auto}
+header{background:var(--panel);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:12px;height:58px}.hd b{font-size:1.05rem}.hd span{color:var(--muted);font-size:.85rem}
+.hd .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.demo{background:#fff7e6;color:#8a5a00;border-bottom:1px solid #f1dfb8;font-size:.85rem;padding:7px 0}
+@media (prefers-color-scheme:dark){.demo{background:#2a210b;color:#f3cf7a;border-color:#4a3a12}}
+main{padding:24px 0 48px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+h1{font-size:1.5rem;margin:0 0 6px}h2{font-size:1.05rem;margin:0 0 12px}
+.sub{color:var(--muted);margin:0 0 18px}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.role{text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:var(--r);padding:16px;cursor:pointer}
+.role:hover{border-color:var(--brand)}.role b{display:block;margin-bottom:4px}.role small{color:var(--muted)}
+label{display:block;font-size:.85rem;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.btn{border:0;background:var(--brand);color:#fff;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row>*{flex:1;min-width:140px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bal{font-size:2rem;font-weight:700}.mono{font-family:ui-monospace,Consolas,monospace;font-size:.88rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:.78rem}
+td.n{text-align:right;font-variant-numeric:tabular-nums}.pos{color:var(--ok)}.neg{color:var(--bad)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.tabs button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 14px;cursor:pointer}
+.tabs button[aria-pressed=true]{background:var(--brand);color:#fff;border-color:var(--brand)}
+.msg{padding:10px 12px;border-radius:9px;margin-top:12px;font-size:.9rem}.msg.ok{background:color-mix(in srgb,var(--ok) 12%,transparent);color:var(--ok)}.msg.err{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.hint{color:var(--muted);font-size:.82rem}.tablewrap{overflow-x:auto}
+@media(max-width:720px){.roles,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap hd"><b>🏦 ARH Bank</b><span>simulateur web du projet C</span><div class="r" id="who"></div></div></header>
+<div class="demo"><div class="wrap">Démonstration : comptes et montants fictifs, données conservées uniquement dans votre navigateur. Aucune opération bancaire réelle. <a href="https://github.com/aya-haiti/bank-management-system-c" target="_blank" rel="noopener">Code C original</a></div></div>
+<main class="wrap" id="app"></main>
+<script>
+/* Règles reprises du programme C (employe.h, utilisateur.h, admin.h) :
+   identifiant client = 5 chiffres, code = 4 à 6 chiffres, numéro de compte = 16 chiffres,
+   dépôt / retrait > 0, retrait refusé si solde insuffisant, virement par RIB ;
+   si le RIB est introuvable, le programme original débite quand même le montant + 10 DH de pénalité. */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dh=n=>Number(n).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' DH';
+const KEY='arh-bank-demo-v1';
+const VILLES={Casablanca:'780',Rabat:'810',Tanger:'640','Al Hoceima':'560',Fès:'270'};
+function rib(acc,ville){return '230 '+VILLES[ville]+' '+acc;}
+function seed(){
+  const c=(id,code,nom,prenom,ville,acc,solde)=>({identifiant:id,code,nom,prenom,ville,numeroCompte:acc,rib:rib(acc,ville),solde});
+  return {admin:{user:'admin',pass:'demo'},
+    employes:[{empno:101,nom:'ALAMI',prenom:'Sara',pass:'1234'}],
+    clients:[c('10001','1234','BENNANI','Youssef','Casablanca','2301000000000001',12500),c('10002','5678','IDRISSI','Nadia','Rabat','2301000000000002',3400),c('10003','2468','TAZI','Omar','Al Hoceima','2301000000000003',780)],
+    transactions:[]};
+}
+let db; try{db=JSON.parse(localStorage.getItem(KEY))||seed();}catch{db=seed();}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db));}catch{}};
+let session=null, tab=null;
+function tx(c,type,montant,motif){db.transactions.unshift({identifiant:c.identifiant,nom:c.nom,prenom:c.prenom,type,montant,nouveauSolde:c.solde,motif,date:new Date().toISOString()});}
+const msg=(ok,t)=>`<div class="msg ${ok?'ok':'err'}" role="status">${esc(t)}</div>`;
+const amount=v=>{const n=Number(String(v).replace(',','.'));return isFinite(n)?Math.round(n*100)/100:NaN;};
+
+function header(){ $('#who').innerHTML=session?`<span>${esc(session.label)}</span><button class="btn ghost" id="logout">Déconnexion</button>`:'<button class="btn ghost" id="reset">Réinitialiser la démo</button>';
+  if(session) $('#logout').onclick=()=>{session=null;render();}; else $('#reset').onclick=()=>{db=seed();save();render();};}
+
+function home(){
+  $('#app').innerHTML=`<h1>Bienvenue chez ARH Bank</h1><p class="sub">Le programme console d'origine propose trois espaces. Choisissez un rôle ; les identifiants de démonstration sont pré-remplis.</p>
+  <div class="roles">
+    <button class="role" data-r="client"><b>👤 Client</b><small>Solde, virement par RIB, paiement de facture, recharge, historique</small></button>
+    <button class="role" data-r="employe"><b>🧑‍💼 Employé</b><small>Créer un compte, dépôt, retrait, rechercher et supprimer un client</small></button>
+    <button class="role" data-r="admin"><b>🛡️ Administrateur</b><small>Ajouter, modifier, supprimer des employés</small></button>
+  </div><div id="login"></div>`;
+  document.querySelectorAll('.role').forEach(b=>b.onclick=()=>login(b.dataset.r));
+}
+function login(role){
+  const d={client:['Identifiant (5 chiffres)','10001','Code','1234'],employe:['Numéro employé','101','Mot de passe','1234'],admin:['Utilisateur','admin','Mot de passe','demo']}[role];
+  $('#login').innerHTML=`<form class="card" id="lf" style="margin-top:14px;max-width:420px"><h2>Connexion ${role}</h2><label for="u">${d[0]}</label><input id="u" value="${d[1]}" autocomplete="off"><label for="p">${d[2]}</label><input id="p" type="password" value="${d[3]}"><div style="margin-top:14px"><button class="btn">Se connecter</button></div><div id="lm"></div><p class="hint">Identifiants fictifs de démonstration.</p></form>`;
+  $('#lf').onsubmit=e=>{e.preventDefault();const u=$('#u').value.trim(),p=$('#p').value;
+    if(role==='client'){const c=db.clients.find(x=>x.identifiant===u&&x.code===p);if(c){session={role,id:c.identifiant,label:c.prenom+' '+c.nom};tab='compte';return render();}}
+    if(role==='employe'){const em=db.employes.find(x=>String(x.empno)===u&&x.pass===p);if(em){session={role,id:em.empno,label:'Employé '+em.prenom};tab='clients';return render();}}
+    if(role==='admin'&&u===db.admin.user&&p===db.admin.pass){session={role,label:'Administrateur'};return render();}
+    $('#lm').innerHTML=msg(false,'Identifiants incorrects.');};
+}
+function history(id){const list=db.transactions.filter(t=>!id||t.identifiant===id);
+  return list.length?`<div class="tablewrap"><table><thead><tr><th>Date</th>${id?'':'<th>Client</th>'}<th>Opération</th><th>Motif</th><th class="n">Montant</th><th class="n">Nouveau solde</th></tr></thead><tbody>${list.slice(0,50).map(t=>`<tr><td>${new Date(t.date).toLocaleString('fr-FR')}</td>${id?'':`<td>${esc(t.prenom+' '+t.nom)}</td>`}<td>${esc(t.type)}</td><td>${esc(t.motif)}</td><td class="n ${t.montant<0?'neg':'pos'}">${dh(t.montant)}</td><td class="n">${dh(t.nouveauSolde)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="hint">Aucune transaction pour le moment.</p>';}
+function tabs(list){return `<div class="tabs">${list.map(([k,l])=>`<button aria-pressed="${tab===k}" data-t="${k}">${l}</button>`).join('')}</div>`;}
+function bindTabs(){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{tab=b.dataset.t;render();});}
+
+function client(){
+  const c=db.clients.find(x=>x.identifiant===session.id);
+  $('#app').innerHTML=`<div class="card"><div class="hint">Compte ${esc(c.numeroCompte)} · RIB <span class="mono">${esc(c.rib)}</span></div><div class="bal">${dh(c.solde)}</div></div>
+  ${tabs([['compte','Historique'],['virement','Virement'],['facture','Facture'],['recharge','Recharge'],['code','Changer le code']])}<div class="card" id="pane"></div>`;
+  bindTabs(); const p=$('#pane');
+  if(tab==='compte') p.innerHTML='<h2>Historique des transactions</h2>'+history(c.identifiant);
+  if(tab==='virement'){const others=db.clients.filter(x=>x!==c);
+    p.innerHTML=`<h2>Virement par RIB</h2><form id="f"><div class="row"><div><label for="rib">RIB du destinataire</label><input id="rib" list="ribs" placeholder="230 810 2301…"><datalist id="ribs">${others.map(o=>`<option value="${esc(o.rib)}">${esc(o.prenom+' '+o.nom)}</option>`).join('')}</datalist></div><div><label for="m">Montant (DH)</label><input id="m" inputmode="decimal"></div></div><div style="margin-top:12px"><button class="btn">Envoyer</button></div><p class="hint">Règle du programme d'origine : un RIB inconnu entraîne quand même le débit du montant + 10 DH de pénalité.</p><div id="r"></div></form>`;
+    $('#f').onsubmit=e=>{e.preventDefault();const m=amount($('#m').value),r=$('#rib').value.trim();
+      if(!(m>0))return $('#r').innerHTML=msg(false,'Le montant doit être supérieur à zéro.');
+      const dest=db.clients.find(x=>x.rib===r&&x!==c);
+      if(dest){if(c.solde<m)return $('#r').innerHTML=msg(false,'Solde insuffisant pour effectuer le virement.');
+        c.solde-=m;dest.solde+=m;tx(c,'Virement émis',-m,'vers '+dest.prenom+' '+dest.nom);tx(dest,'Virement reçu',m,'de '+c.prenom+' '+c.nom);save();render();$('#pane').insertAdjacentHTML('beforeend',msg(true,'Virement effectué avec succès.'));}
+      else{if(c.solde<m+10)return $('#r').innerHTML=msg(false,'Solde insuffisant pour effectuer le virement avec la pénalité.');
+        c.solde-=m+10;tx(c,'Virement (RIB inconnu)',-(m+10),'pénalité 10 DH incluse');save();render();$('#pane').insertAdjacentHTML('beforeend',msg(false,'RIB du destinataire non trouvé : montant + 10 DH de pénalité débités (règle du programme original).'));}};}
+  if(tab==='facture'||tab==='recharge'){const isF=tab==='facture';
+    p.innerHTML=`<h2>${isF?'Payer une facture':'Recharge téléphonique'}</h2><form id="f"><div class="row"><div><label for="o">${isF?'Fournisseur':'Opérateur'}</label><select id="o">${(isF?['Électricité (fictif)','Eau (fictif)','Internet (fictif)']:['Opérateur A (fictif)','Opérateur B (fictif)','Opérateur C (fictif)']).map(o=>`<option>${o}</option>`).join('')}</select></div><div><label for="m">Montant (DH)</label><input id="m" inputmode="decimal"></div></div><div style="margin-top:12px"><button class="btn">Valider</button></div><div id="r"></div></form>`;
+    $('#f').onsubmit=e=>{e.preventDefault();const m=amount($('#m').value);if(!(m>0))return $('#r').innerHTML=msg(false,'Le montant doit être supérieur à zéro.');
+      if(c.solde<m)return $('#r').innerHTML=msg(false,'Solde insuffisant.');c.solde-=m;tx(c,isF?'Paiement facture':'Recharge',-m,$('#o').value);save();render();$('#pane').insertAdjacentHTML('beforeend',msg(true,'Opération effectuée.'));};}
+  if(tab==='code'){p.innerHTML=`<h2>Changer le code</h2><form id="f" style="max-width:360px"><label for="a">Code actuel</label><input id="a" type="password"><label for="n">Nouveau code (4 à 6 chiffres)</label><input id="n" type="password" inputmode="numeric"><div style="margin-top:12px"><button class="btn">Enregistrer</button></div><div id="r"></div></form>`;
+    $('#f').onsubmit=e=>{e.preventDefault();if($('#a').value!==c.code)return $('#r').innerHTML=msg(false,'Code actuel incorrect.');if(!/^\d{4,6}$/.test($('#n').value))return $('#r').innerHTML=msg(false,'Le code doit contenir 4 à 6 chiffres.');c.code=$('#n').value;save();$('#r').innerHTML=msg(true,'Code modifié.');};}
+}
+
+function employe(){
+  $('#app').innerHTML=`${tabs([['clients','Clients'],['operation','Dépôt / retrait'],['creer','Créer un compte'],['journal','Journal']])}<div class="card" id="pane"></div>`; bindTabs(); const p=$('#pane');
+  if(tab==='clients'){p.innerHTML=`<h2>Clients</h2><input id="q" placeholder="Rechercher par identifiant ou nom" aria-label="Rechercher"><div id="list" style="margin-top:10px"></div>`;
+    const draw=()=>{const q=$('#q').value.toLowerCase();const l=db.clients.filter(c=>(c.identifiant+c.nom+c.prenom).toLowerCase().includes(q));
+      $('#list').innerHTML=`<div class="tablewrap"><table><thead><tr><th>Identifiant</th><th>Nom</th><th>Ville</th><th>Compte</th><th class="n">Solde</th><th></th></tr></thead><tbody>${l.map(c=>`<tr><td>${c.identifiant}</td><td>${esc(c.prenom+' '+c.nom)}</td><td>${esc(c.ville)}</td><td class="mono">${c.numeroCompte}</td><td class="n">${dh(c.solde)}</td><td><button class="btn ghost" data-del="${c.identifiant}">Supprimer</button></td></tr>`).join('')}</tbody></table></div>`;
+      document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Supprimer ce client fictif ?')){db.clients=db.clients.filter(c=>c.identifiant!==b.dataset.del);save();draw();}});};
+    $('#q').oninput=draw;draw();}
+  if(tab==='operation'){p.innerHTML=`<h2>Dépôt / retrait</h2><form id="f"><div class="row"><div><label for="c">Client</label><select id="c">${db.clients.map(c=>`<option value="${c.identifiant}">${c.identifiant} · ${esc(c.prenom+' '+c.nom)} (${dh(c.solde)})</option>`).join('')}</select></div><div><label for="t">Opération</label><select id="t"><option value="d">Dépôt</option><option value="r">Retrait</option></select></div><div><label for="m">Montant (DH)</label><input id="m" inputmode="decimal"></div></div><div style="margin-top:12px"><button class="btn">Valider</button></div><div id="r"></div></form>`;
+    $('#f').onsubmit=e=>{e.preventDefault();const c=db.clients.find(x=>x.identifiant===$('#c').value),m=amount($('#m').value),dep=$('#t').value==='d';
+      if(!(m>0))return $('#r').innerHTML=msg(false,'Montant invalide.');if(!dep&&c.solde<m)return $('#r').innerHTML=msg(false,'Solde insuffisant.');
+      c.solde+=dep?m:-m;tx(c,dep?'Dépôt':'Retrait',dep?m:-m,'guichet');save();const v=$('#c').value;render();$('#c').value=v;$('#r').innerHTML=msg(true,`${dep?'Dépôt':'Retrait'} effectué. Nouveau solde : ${dh(c.solde)}`);};}
+  if(tab==='creer'){p.innerHTML=`<h2>Créer un compte client</h2><form id="f"><div class="row"><div><label for="i">Identifiant (5 chiffres)</label><input id="i" inputmode="numeric"></div><div><label for="k">Code (4 à 6 chiffres)</label><input id="k" inputmode="numeric"></div></div><div class="row"><div><label for="n">Nom</label><input id="n"></div><div><label for="pr">Prénom</label><input id="pr"></div><div><label for="v">Ville</label><select id="v">${Object.keys(VILLES).map(v=>`<option>${v}</option>`).join('')}</select></div></div><div style="margin-top:12px"><button class="btn">Créer</button></div><div id="r"></div></form>`;
+    $('#f').onsubmit=e=>{e.preventDefault();const id=$('#i').value.trim(),k=$('#k').value.trim(),n=$('#n').value.trim(),pr=$('#pr').value.trim(),v=$('#v').value;
+      if(!/^\d{5}$/.test(id))return $('#r').innerHTML=msg(false,"L'identifiant doit contenir exactement 5 chiffres.");
+      if(db.clients.some(c=>c.identifiant===id))return $('#r').innerHTML=msg(false,'Identifiant déjà utilisé.');
+      if(!/^\d{4,6}$/.test(k))return $('#r').innerHTML=msg(false,'Le code doit contenir 4 à 6 chiffres.');
+      if(!n||!pr)return $('#r').innerHTML=msg(false,'Nom et prénom obligatoires.');
+      let acc;do{acc='2301'+String(Math.floor(Math.random()*1e12)).padStart(12,'0');}while(db.clients.some(c=>c.numeroCompte===acc));
+      db.clients.push({identifiant:id,code:k,nom:n.toUpperCase(),prenom:pr,ville:v,numeroCompte:acc,rib:rib(acc,v),solde:0});save();$('#r').innerHTML=msg(true,`Compte créé : ${acc} (solde initial 0,00 DH).`);};}
+  if(tab==='journal')p.innerHTML='<h2>Journal de toutes les transactions</h2>'+history(null);
+}
+
+function admin(){
+  $('#app').innerHTML=`<div class="card"><h2>Employés</h2><div id="list"></div></div><form class="card" id="f"><h2>Ajouter un employé</h2><div class="row"><div><label for="e">Numéro</label><input id="e" inputmode="numeric"></div><div><label for="n">Nom</label><input id="n"></div><div><label for="pr">Prénom</label><input id="pr"></div><div><label for="pw">Mot de passe</label><input id="pw" type="password"></div></div><div style="margin-top:12px"><button class="btn">Ajouter</button></div><div id="r"></div></form>`;
+  const draw=()=>{$('#list').innerHTML=`<div class="tablewrap"><table><thead><tr><th>N°</th><th>Nom</th><th></th></tr></thead><tbody>${db.employes.map(e=>`<tr><td>${e.empno}</td><td>${esc(e.prenom+' '+e.nom)}</td><td><button class="btn ghost" data-d="${e.empno}">Supprimer</button></td></tr>`).join('')}</tbody></table></div>`;
+    document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{db.employes=db.employes.filter(e=>String(e.empno)!==b.dataset.d);save();draw();});};
+  draw();
+  $('#f').onsubmit=e=>{e.preventDefault();const no=parseInt($('#e').value,10);if(!(no>0))return $('#r').innerHTML=msg(false,'Numéro invalide.');if(db.employes.some(x=>x.empno===no))return $('#r').innerHTML=msg(false,'Ce numéro existe déjà.');
+    if(!$('#n').value.trim()||!$('#pw').value)return $('#r').innerHTML=msg(false,'Nom et mot de passe obligatoires.');
+    db.employes.push({empno:no,nom:$('#n').value.trim().toUpperCase(),prenom:$('#pr').value.trim(),pass:$('#pw').value});save();draw();$('#r').innerHTML=msg(true,'Employé ajouté.');};
+}
+function render(){header();if(!session)return home();({client,employe,admin})[session.role]();}
+render();
+</script>
+</body>
+</html>
